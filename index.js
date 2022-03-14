@@ -2,6 +2,17 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const userRoutes = require("./Routes/userRoutes");
 const productRoutes = require("./Routes/productRoutes");
+const db = require('mongoose');
+const { dbUrl } = require('./Config/');
+
+const DatabaseConn = db.connect(dbUrl, { useNewUrlParser: true })
+
+DatabaseConn.then(() => {
+    console.log("Database Connected")
+}).catch((err) => {
+    console.log("Database not Connected")
+    console.log(err)
+})
 
 const app = express();
 
@@ -30,3 +41,17 @@ app.use('/product', productRoutes)
 app.listen(port, () => {
     console.log("=------ server running----=")
 })
+
+
+
+
+// const db = require('mongoose')
+
+// const DatabaseConn = db.connect(DatabaseInfo.MongoDBconnection,{ useNewUrlParser: true })
+
+// DatabaseConn.then(() => {
+//     console.log("Database Connected")
+// }).catch((err) => {
+//     console.log("Database not Connected")
+//     console.log(err)
+// })
