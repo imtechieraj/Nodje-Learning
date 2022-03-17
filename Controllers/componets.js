@@ -3,16 +3,14 @@ const bcrypt=require('bcrypt');
 
 const { registerSchema } = require('../Models/userModule/schema')
 
-const serversideValidation = (req,res) => {
-    let schema = registerSchema;
-    let userData = req.body;
-    // let result=schema.validate(userData);
-    // console.log(result)
-    let buildSchema = Joi.object().keys(schema)
-    let result = Joi.valid(userData, buildSchema)
-    res.send(result)
-    // console.log(result.error)
-    // console.log(result)
+const serversideValidation = (req,res,next) => {
+    const buildSchema = Joi.object(registerSchema);
+    const reqData=req.body;
+    const result=buildSchema.validate(reqData);
+    console.log(result)
+    if(result.error){
+       return res.send({status:false,stateCode:404,message:result.error.details[0].message});
+    }return next()
 };
 
 const passwordHash = (password, callback) => {

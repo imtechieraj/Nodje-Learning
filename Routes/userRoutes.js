@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
-// const {  } = require('./middleware');
-const { registerUserdata } = require('../Controllers/userModule');
+const { validationMiddleware } = require('./middleware');
+const { registerUserdata , login} = require('../Controllers/userModule');
 
-router.post("/register", registerUserdata)
+router.post("/register", validationMiddleware, registerUserdata)
 
-router.post("/login", (req, res) => {
-    res.send(req.body)
-})
+router.post("/login", login)
 
 router.post("/forgetPassword", (req, res) => {
     res.send(req.body)

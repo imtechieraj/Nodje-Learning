@@ -8,6 +8,15 @@ const addUserdata = (userdata, callback) => {
     })
 }
 
+const validUser = (reqData, callback) => {
+    userSchema.find({ email: reqData.email }, (err, result) => {
+        if (result) {
+            return callback(null, result)
+        } return callback(err)
+    })
+}
+
 module.exports = {
-    addUserdata
+    addUserdata,
+    validUser
 }
