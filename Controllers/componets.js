@@ -1,16 +1,17 @@
 const Joi = require('joi');
-const bcrypt=require('bcrypt');
+const bcrypt = require('bcrypt');
+var jwt = require('jsonwebtoken');
 
 const { registerSchema } = require('../Models/userModule/schema')
 
-const serversideValidation = (req,res,next) => {
+const serversideValidation = (req, res, next) => {
     const buildSchema = Joi.object(registerSchema);
-    const reqData=req.body;
-    const result=buildSchema.validate(reqData);
+    const reqData = req.body;
+    const result = buildSchema.validate(reqData);
     console.log(result)
-    if(result.error){
-       return res.send({status:false,stateCode:404,message:result.error.details[0].message});
-    }return next()
+    if (result.error) {
+        return res.send({ status: false, stateCode: 404, message: result.error.details[0].message });
+    } return next()
 };
 
 const passwordHash = (password, callback) => {
@@ -21,10 +22,27 @@ const passwordHash = (password, callback) => {
     });
 }
 
+const passwordVerify = (password, encodePassword, callback) => {
+    bcrypt.compare(password, encodePassword, (err, result) => {
+        if (err) {
+            callback(err)
+        } else {
+            callback(null, result)
+        }
+    })
+}
+
+const jwtTokenGen = (email) => {
+    var token = jwt.sign({ email: email }, 'shhhhh');
+
+    return token;
+}
 
 module.exports = {
     serversideValidation,
-    passwordHash
+    passwordHash,
+    passwordVerify,
+    jwtTokenGen
 }
 
 

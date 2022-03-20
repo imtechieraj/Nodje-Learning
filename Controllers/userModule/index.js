@@ -1,5 +1,5 @@
 const { addUserdata, validUser } = require('../../Models/userModule/');
-const { passwordHash } = require('../componets');
+const { passwordHash, passwordVerify,jwtTokenGen } = require('../componets');
 
 const registerUserdata = (req, res) => {
     passwordHash(req.body.password, (err, hash) => {
@@ -14,8 +14,22 @@ const registerUserdata = (req, res) => {
     })
 }
 
-const passwordCheck = (userData, res) => {
-    console.log(userData)
+const tokenGen=(userData,res)=>{
+    let email=userData.email;
+    let token=jwtTokenGen(email);
+
+    res.send({ status: true, message: "login success", userData ,token})
+}
+
+const passwordCheck = (userData, password, res) => {
+    let encodePassword = userData[0].password;
+    passwordVerify(password, encodePassword, (err,result) => {
+        if (result) {
+            tokenGen(userData[0],res)
+        } else {
+            res.send("incorrect password")
+        }
+    })
 }
 
 const checkUser = (reqData, res) => {
@@ -23,7 +37,7 @@ const checkUser = (reqData, res) => {
         if (result) {
             if (result.length === 0) {
                 return res.send("user not found")
-            } return passwordCheck(result, req.body.password, res)
+            } return passwordCheck(result, reqData.password, res)
         } return res.send("user not found")
     })
 }
